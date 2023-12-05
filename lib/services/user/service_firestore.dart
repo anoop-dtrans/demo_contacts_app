@@ -31,5 +31,17 @@ class FirestoreUserService extends UserService {
   }
 
   @override
-  Future<void> update(User user) async {}
+  Future<void> update(User user) async {
+    final data = {
+      'name': user.name,
+      'email': user.email,
+      'phone': user.phone,
+      'website': user.website,
+      'company': user.company,
+    };
+    await users.doc(user.id).set({
+      ...data,
+      'updatedAt': DateTime.now().toUtc().toIso8601String(),
+    }, SetOptions(merge: true));
+  }
 }

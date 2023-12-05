@@ -14,15 +14,13 @@ class AppCubit extends Cubit<AppState> {
 
   /// Set User
   Future<void> onUserLogin(auth.User user) async {
-    try {
-      final appUser = User(
-        id: user.uid,
-        email: user.email ?? '',
-        name: user.displayName,
-      );
-      await locator<UserManager>().create(appUser);
-      emit(state.copyWith(user: appUser));
-    } catch (e) {}
+    final appUser = User(
+      id: user.uid,
+      email: user.email ?? '',
+      name: user.displayName,
+    );
+    await locator<UserManager>().create(appUser);
+    emit(state.copyWith(user: appUser));
   }
 
   /// On User Logout

@@ -1,5 +1,7 @@
+import 'package:equatable/equatable.dart';
+
 /// App User
-class User {
+class User extends Equatable {
   final String id;
   final String email;
 
@@ -11,9 +13,9 @@ class User {
   final Company? company;
 
   /// Empty User
-  factory User.empty() => User(id: '', email: '');
+  factory User.empty() => const User(id: '', email: '');
 
-  User({
+  const User({
     required this.id,
     required this.email,
     this.name,
@@ -50,10 +52,12 @@ class User {
         name: json["name"],
         username: json["username"],
         email: json["email"],
-        address: Address.fromJson(json["address"]),
+        address:
+            json['address'] != null ? Address.fromJson(json["address"]) : null,
         phone: json["phone"],
         website: json["website"],
-        company: Company.fromJson(json["company"]),
+        company:
+            json["company"] != null ? Company.fromJson(json["company"]) : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -68,6 +72,10 @@ class User {
       };
 
   bool get isEmpty => id.isEmpty;
+
+  @override
+  List<Object?> get props =>
+      [id, name, username, email, address, phone, website, company];
 }
 
 class Address {

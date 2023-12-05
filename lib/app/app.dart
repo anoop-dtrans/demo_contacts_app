@@ -49,15 +49,21 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        BlocProvider.value(value: locator<AppCubit>()),
-        ChangeNotifierProvider(create: (_) => AppProvider())
+        BlocProvider(create: (_) {
+          // final cubit = AppCubit();
+          // cubit.initialize();
+          // return cubit;
+          // or
+          return AppCubit()..initialize();
+        }),
+        //ChangeNotifierProvider(create: (_) => AppProvider())
       ],
-      child: Consumer<AppProvider>(
+      child: BlocBuilder<AppCubit, AppState>(
         //selector: (context, provider) => provider.user,
-        builder: (context, provider, _) {
+        builder: (context, state) {
           return MaterialApp(
-            key: ValueKey(provider.user.id),
-            initialRoute: provider.user.isEmpty ? '/sign-in' : '/profile',
+            key: ValueKey(state.user.id),
+            initialRoute: state.user.isEmpty ? '/sign-in' : '/profile',
             // initialRoute: FirebaseAuth.instance.currentUser == null
             //     ? '/sign-in'
             //     : '/profile',
@@ -68,8 +74,8 @@ class MyApp extends StatelessWidget {
                   actions: [
                     AuthStateChangeAction<SignedIn>((context, state) {
                       if (state.user != null) {
-                        //locator<AppCubit>().onUserLogin(state.user!);
-                        context.read<AppProvider>().onUserLogin(state.user!);
+                        context.read<AppCubit>().onUserLogin(state.user!);
+                        //context.read<AppProvider>().onUserLogin(state.user!);
                         //Navigator.pushReplacementNamed(context, '/profile');
                       }
                     }),
@@ -81,7 +87,8 @@ class MyApp extends StatelessWidget {
                   providers: providers,
                   actions: [
                     SignedOutAction((context) {
-                      Navigator.pushReplacementNamed(context, '/sign-in');
+                      //Navigator.pushReplacementNamed(context, '/sign-in');
+                      locator<AppCubit>().onUserLogout();
                     }),
                   ],
                 );

@@ -6,9 +6,7 @@ class AppState extends Equatable {
   final User user;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [user];
 
-  AppState copyWith({User? user}) {
-    return AppState(user: user ?? this.user);
-  }
+  AppState copyWith({User? user}) => AppState(user: user ?? this.user);
 }

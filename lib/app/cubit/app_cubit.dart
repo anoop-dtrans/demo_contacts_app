@@ -10,7 +10,9 @@ part 'app_state.dart';
 class AppCubit extends Cubit<AppState> {
   AppCubit() : super(AppState(user: User.empty()));
 
-  Future<void> initialize() async {}
+  Future<void> initialize() async {
+    auth.FirebaseAuth.instance.currentUser;
+  }
 
   /// Set User
   Future<void> onUserLogin(auth.User user) async {
@@ -24,5 +26,7 @@ class AppCubit extends Cubit<AppState> {
   }
 
   /// On User Logout
-  Future<void> onUserLogout() async {}
+  Future<void> onUserLogout() async {
+    emit(state.copyWith(user: User.empty()));
+  }
 }

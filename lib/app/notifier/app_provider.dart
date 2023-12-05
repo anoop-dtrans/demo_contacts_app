@@ -17,10 +17,16 @@ class AppProvider extends ChangeNotifier {
       name: authUser.displayName,
     );
     await locator<UserManager>().create(appUser);
-    user = appUser;
-    notifyListeners();
+    _setUser(appUser);
   }
 
   /// On User Logout
-  Future<void> onUserLogout() async {}
+  Future<void> onUserLogout() async {
+    _setUser(User.empty());
+  }
+
+  _setUser(User appUser) {
+    user = appUser;
+    notifyListeners();
+  }
 }

@@ -2,12 +2,10 @@ import 'package:demo_api_app/app/cubit/app_cubit.dart';
 import 'package:demo_api_app/app/notifier/app_provider.dart';
 import 'package:demo_api_app/pages/user/state_ful.dart';
 import 'package:demo_api_app/services/locator.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:demo_api_app/models/user.dart' as dto;
 
 class DemoContactApp extends StatelessWidget {
   const DemoContactApp({super.key});
@@ -58,6 +56,7 @@ class MyApp extends StatelessWidget {
         //selector: (context, provider) => provider.user,
         builder: (context, provider, _) {
           return MaterialApp(
+            key: ValueKey(provider.user.id),
             initialRoute: provider.user.isEmpty ? '/sign-in' : '/profile',
             // initialRoute: FirebaseAuth.instance.currentUser == null
             //     ? '/sign-in'

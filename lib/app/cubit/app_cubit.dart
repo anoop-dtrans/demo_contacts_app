@@ -21,7 +21,7 @@ class AppCubit extends Cubit<AppState> {
       email: user.email ?? '',
       name: user.displayName,
     );
-    await locator<UserManager>().create(appUser);
+    await locator<UserManager>().setUser(appUser);
     emit(state.copyWith(user: appUser));
   }
 

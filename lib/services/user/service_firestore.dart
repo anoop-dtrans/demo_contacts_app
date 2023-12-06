@@ -8,11 +8,7 @@ class FirestoreUserService extends UserService {
   @override
   Future<User?> getUser(String userId) async {
     final snapshot = await users.doc(userId).get();
-    if (!snapshot.exists) {
-      return null;
-    }
-
-    return User.fromJson(snapshot.data()!);
+    return snapshot.exists ? User.fromJson(snapshot.data()!) : null;
   }
 
   @override
@@ -31,7 +27,7 @@ class FirestoreUserService extends UserService {
   }
 
   @override
-  Future<void> update(User user) async {
+  Future<User?> update(User user) async {
     final data = {
       'name': user.name,
       'email': user.email,
@@ -43,5 +39,7 @@ class FirestoreUserService extends UserService {
       ...data,
       'updatedAt': DateTime.now().toUtc().toIso8601String(),
     }, SetOptions(merge: true));
+
+    return getUser(user.id);
   }
 }

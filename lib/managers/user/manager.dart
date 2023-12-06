@@ -3,14 +3,26 @@ import 'package:demo_api_app/services/locator.dart';
 import 'package:demo_api_app/services/user/service.dart';
 
 class UserManager {
-  Future<void> create(User user) async {
-    final service = locator<UserService>();
-    final appUser = await service.getUser(user.id);
+  /// Current User
+  User get currentUser => _user;
+
+  /// Internal User
+  User _user = User.empty();
+
+  Future<void> setUser(User user) async {
+    /// If user is not present create user
+    final appUser = await userService.getUser(user.id);
     if (appUser == null) {
       ///throw Exception('A user already exists!!!');
-      await service.create(user);
+      await userService.create(user);
     }
+
+    _user = user;
   }
 
-  Future<void> update(User user) async {}
+  Future<void> update(User user) async {
+    await userService.update(user);
+  }
+
+  UserService get userService => locator<UserService>();
 }

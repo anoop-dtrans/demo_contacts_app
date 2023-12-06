@@ -20,7 +20,7 @@ class UserHttpService extends UserService {
   }
 
   @override
-  Future<void> update(User user) {
+  Future<User?> update(User user) {
     // TODO: implement update
     throw UnimplementedError();
   }

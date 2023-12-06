@@ -16,7 +16,7 @@ class AppProvider extends ChangeNotifier {
       email: authUser.email ?? '',
       name: authUser.displayName,
     );
-    await locator<UserManager>().create(appUser);
+    await locator<UserManager>().setUser(appUser);
     _setUser(appUser);
   }
 

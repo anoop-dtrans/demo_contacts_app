@@ -45,6 +45,8 @@ dependencies:
   get_it: ^7.6.4
   bloc: ^8.1.2
   provider: ^6.1.1
+  cross_file: ^0.3.3+7
+  firebase_storage: ^11.5.3
 
 dev_dependencies:
   flutter_test:

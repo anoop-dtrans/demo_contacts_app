@@ -11,7 +11,7 @@ abstract class UserService {
   Future<void> create(User user);
 
   /// Update User
-  Future<void> update(User user);
+  Future<User?> update(User user);
 }
 
 abstract class UserFilter {}

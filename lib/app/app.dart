@@ -1,6 +1,5 @@
 import 'package:demo_api_app/app/cubit/app_cubit.dart';
-import 'package:demo_api_app/app/notifier/app_provider.dart';
-import 'package:demo_api_app/pages/user/state_ful.dart';
+import 'package:demo_api_app/pages/user/profile/page.dart';
 import 'package:demo_api_app/services/locator.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +33,7 @@ class DemoContactApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const UserStatefulPage(title: 'Flutter Demo Home Page'),
+      //home: const UserStatefulPage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -85,6 +84,12 @@ class MyApp extends StatelessWidget {
               '/profile': (context) {
                 return ProfileScreen(
                   providers: providers,
+                  avatar: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(UserProfilePage.route);
+                    },
+                    icon: const Icon(Icons.photo),
+                  ),
                   actions: [
                     SignedOutAction((context) {
                       //Navigator.pushReplacementNamed(context, '/sign-in');

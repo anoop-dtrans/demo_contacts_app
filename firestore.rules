@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /// Only users can read and write their data
+    match /users/{uid} {
+      match /{collection=**} {
+        /// User can manage their data
+        allow write: if isOwner(uid);
+      }
+    }
+
+    match /{document=**} {
+      allow read: if isSignedIn();
+    }
+  }
+
+  /// Functions
+  function isSignedIn() {
+    return request.auth != null;
+  }
+
+  /// Check for resource owner
+  function isOwner(userId) {
+    return request.auth != null && userId == request.auth.uid;
+  }
+}

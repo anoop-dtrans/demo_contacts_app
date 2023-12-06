@@ -11,6 +11,7 @@ class User extends Equatable {
   final String? phone;
   final String? website;
   final Company? company;
+  final String? imageUrl;
 
   /// Empty User
   factory User.empty() => const User(id: '', email: '');
@@ -24,6 +25,7 @@ class User extends Equatable {
     this.phone,
     this.website,
     this.company,
+    this.imageUrl,
   });
 
   User copyWith({
@@ -35,6 +37,7 @@ class User extends Equatable {
     String? phone,
     String? website,
     Company? company,
+    String? imageUrl,
   }) =>
       User(
         id: id ?? this.id,
@@ -45,6 +48,7 @@ class User extends Equatable {
         phone: phone ?? this.phone,
         website: website ?? this.website,
         company: company ?? this.company,
+        imageUrl: imageUrl ?? this.imageUrl,
       );
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -58,6 +62,7 @@ class User extends Equatable {
         website: json["website"],
         company:
             json["company"] != null ? Company.fromJson(json["company"]) : null,
+        imageUrl: json["imageUrl"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -69,13 +74,25 @@ class User extends Equatable {
         "phone": phone,
         "website": website,
         "company": company?.toJson(),
+        "imageUrl": imageUrl,
       };
 
   bool get isEmpty => id.isEmpty;
 
+  bool get hasImage => imageUrl?.isNotEmpty ?? false;
+
   @override
-  List<Object?> get props =>
-      [id, name, username, email, address, phone, website, company];
+  List<Object?> get props => [
+        id,
+        name,
+        username,
+        email,
+        address,
+        phone,
+        website,
+        company,
+        imageUrl,
+      ];
 }
 
 class Address {

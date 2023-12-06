@@ -33,8 +33,8 @@ class UserProfileCubit extends Cubit<UserProfileState> {
     emit(UserProfileLoaded(user: user, imageFile: file));
   }
 
-  Future<void> uploadImage() async {
-    if (this.state is! UserProfileLoaded) return;
+  Future<String?> uploadImage() async {
+    if (this.state is! UserProfileLoaded) return null;
 
     final state = this.state as UserProfileLoaded;
 
@@ -47,11 +47,38 @@ class UserProfileCubit extends Cubit<UserProfileState> {
       final file = File(state.imageFile!.path);
       await displayPictureRef.putFile(file);
 
-      /// Update user in firestore
-      final updatedUser = state.user.copyWith(imageUrl: imagePath);
-      await locator<UserService>().update(updatedUser);
+      return imagePath;
+    } on FirebaseException catch (e) {}
+  }
 
-      emit(UserProfileUpdated(user: updatedUser));
+  Future<void> saveUser(Map<String, dynamic> user) async {
+    if (this.state is! UserProfileLoaded) return;
+
+    final state = this.state as UserProfileLoaded;
+    User updatedUser = state.user.copyWith();
+
+    if (user.isNotEmpty) {
+      updatedUser = state.user.copyWith(
+        name: user['name'],
+        email: user['email'],
+        phone: user['phone'],
+        company: user['company'],
+        website: user['website'],
+      );
+    }
+
+    if (state.imageFile != null) {
+      final imageUrl = await uploadImage();
+      updatedUser = updatedUser.copyWith(imageUrl: imageUrl);
+    }
+
+    await _saveUser(updatedUser);
+  }
+
+  Future<void> _saveUser(User user) async {
+    try {
+      await locator<UserService>().update(user);
+      emit(UserProfileUpdated(user: user));
     } on FirebaseException catch (e) {}
   }
 }

@@ -67,7 +67,7 @@ class UserProfilePage extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () =>
-                        context.read<UserProfileCubit>().uploadImage(),
+                        context.read<UserProfileCubit>().saveUser({}),
                     child: const Text('Save'),
                   )
                 ],

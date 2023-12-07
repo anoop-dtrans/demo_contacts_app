@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:demo_api_app/models/user.dart';
 import 'package:demo_api_app/pages/user/profile/cubit/user_profile_cubit.dart';
+import 'package:firebase_cached_image/firebase_cached_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -49,7 +51,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _container(state),
+                        _container(context, state),
                         _labelText("Name"),
                         _name,
                         SizedBox(height: 15),
@@ -99,12 +101,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     formMap.addAll(user.toJson());
   }
 
-  Widget _container(UserProfileLoaded state) => Container(
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.symmetric(
-          vertical: 32,
-          horizontal: 16,
-        ),
+  Widget _container(BuildContext context, UserProfileLoaded state) => Container(
+        margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(
             4,
@@ -113,23 +111,46 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ),
         child: GestureDetector(
           onTap: () => context.read<UserProfileCubit>().pickImage(),
-          child: Stack(
-            children: [
-              if (state.imageFile != null)
-                Positioned(
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Image.file(
-                    File(state.imageFile!.path),
-                    fit: BoxFit.cover,
+          child: SizedBox(
+            height: MediaQuery.of(context).size.width * 9 / 16,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Stack(
+                children: [
+                  if (state.imageFile != null)
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Image.file(
+                        File(state.imageFile!.path),
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  else if (state.user.hasImage)
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Image(
+                        image: FirebaseImageProvider(
+                          FirebaseUrl.fromReference(FirebaseStorage.instance
+                              .ref(state.user.imageUrl)),
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  const Center(
+                    child: Icon(
+                      Icons.image,
+                      color: Colors.yellow,
+                    ),
                   ),
-                ),
-              const Center(
-                child: Icon(Icons.image),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       );

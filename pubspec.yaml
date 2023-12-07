@@ -48,6 +48,7 @@ dependencies:
   cross_file: ^0.3.3+7
   firebase_storage: ^11.5.3
   image_picker: ^1.0.4
+  firebase_cached_image: ^0.5.2
 
 dev_dependencies:
   flutter_test:

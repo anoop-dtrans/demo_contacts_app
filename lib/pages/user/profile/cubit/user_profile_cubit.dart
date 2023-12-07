@@ -6,6 +6,7 @@ import 'package:demo_api_app/models/user.dart';
 import 'package:demo_api_app/services/locator.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 part 'user_profile_state.dart';
@@ -44,7 +45,10 @@ class UserProfileCubit extends Cubit<UserProfileState> {
       final imagePath = "users/${state.user.id}/dp.jpg";
       final displayPictureRef = storageRef.child(imagePath);
       final file = File(state.imageFile!.path);
-      await displayPictureRef.putFile(file);
+      await displayPictureRef.putFile(
+        file,
+        SettableMetadata(contentType: 'image/jpeg'),
+      );
 
       return imagePath;
     } on FirebaseException catch (e) {}

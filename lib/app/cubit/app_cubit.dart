@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:demo_api_app/extensions/user.dart';
 import 'package:demo_api_app/managers/user/manager.dart';
 import 'package:demo_api_app/models/user.dart';
 import 'package:demo_api_app/services/locator.dart';
@@ -11,16 +12,16 @@ class AppCubit extends Cubit<AppState> {
   AppCubit() : super(AppState(user: User.empty()));
 
   Future<void> initialize() async {
-    auth.FirebaseAuth.instance.currentUser;
+    final user = auth.FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final appUser = await locator<UserManager>().getUser(user.uid);
+      emit(state.copyWith(user: appUser));
+    }
   }
 
   /// Set User
   Future<void> onUserLogin(auth.User user) async {
-    final appUser = User(
-      id: user.uid,
-      email: user.email ?? '',
-      name: user.displayName,
-    );
+    final appUser = user.toAppUser();
     await locator<UserManager>().setUser(appUser);
     emit(state.copyWith(user: appUser));
   }

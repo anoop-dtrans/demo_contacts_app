@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:demo_api_app/managers/user/manager.dart';
 import 'package:demo_api_app/models/user.dart';
 import 'package:demo_api_app/services/locator.dart';
-import 'package:demo_api_app/services/user/service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -62,7 +61,8 @@ class UserProfileCubit extends Cubit<UserProfileState> {
         name: user['name'],
         email: user['email'],
         phone: user['phone'],
-        company: user['company'],
+        company:
+            user['company'] != null ? Company(name: user['company']) : null,
         website: user['website'],
       );
     }
@@ -77,7 +77,7 @@ class UserProfileCubit extends Cubit<UserProfileState> {
 
   Future<void> _saveUser(User user) async {
     try {
-      await locator<UserService>().update(user);
+      await locator<UserManager>().update(user);
       emit(UserProfileUpdated(user: user));
     } on FirebaseException catch (e) {}
   }

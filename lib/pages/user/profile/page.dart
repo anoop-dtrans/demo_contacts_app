@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:demo_api_app/models/user.dart';
 import 'package:demo_api_app/pages/user/profile/cubit/user_profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,39 +36,51 @@ class _UserProfilePageState extends State<UserProfilePage> {
           },
           builder: (context, state) {
             if (state is UserProfileLoaded) {
-              return Form(
-                key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsets.all(25.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _container(state),
-                      _labelText("Name"),
-                      _name,
-                      SizedBox(height: 15),
-                      _labelText("Email"),
-                      _email,
-                      SizedBox(height: 15),
-                      _labelText("Phone"),
-                      _phone,
-                      SizedBox(height: 15),
-                      _labelText("Address"),
-                      _address,
-                      SizedBox(height: 15),
-                      _labelText("Company"),
-                      _company,
-                      SizedBox(height: 15),
-                      _labelText("Website"),
-                      _website,
-                      SizedBox(height: 15),
-                      ElevatedButton(
-                        onPressed: () =>
-                            context.read<UserProfileCubit>().saveUser({}),
-                        child: const Text('Save'),
-                      )
-                    ],
+              if (formMap.isEmpty) {
+                _setupInitialValue(state.user);
+              }
+
+              return SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _container(state),
+                        _labelText("Name"),
+                        _name,
+                        SizedBox(height: 15),
+                        _labelText("Email"),
+                        _email,
+                        SizedBox(height: 15),
+                        _labelText("Phone"),
+                        _phone,
+                        SizedBox(height: 15),
+                        _labelText("Address"),
+                        _address,
+                        SizedBox(height: 15),
+                        _labelText("Company"),
+                        _company,
+                        SizedBox(height: 15),
+                        _labelText("Website"),
+                        _website,
+                        SizedBox(height: 15),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              _formKey.currentState!.save();
+                              context
+                                  .read<UserProfileCubit>()
+                                  .saveUser(formMap);
+                            }
+                          },
+                          child: const Text('Save'),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -82,7 +95,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  _container(UserProfileLoaded state) => Container(
+  void _setupInitialValue(User user) {
+    formMap.addAll(user.toJson());
+  }
+
+  Widget _container(UserProfileLoaded state) => Container(
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.symmetric(
           vertical: 32,
@@ -116,25 +133,34 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
         ),
       );
-  _labelText(String label) {
+
+  Widget _labelText(String label, {bool isRequired = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Text(
         label,
-        style: TextStyle(fontSize: 15, color: Colors.black),
+        style: const TextStyle(
+          fontSize: 15,
+          color: Colors.black,
+        ),
       ),
     );
   }
 
   Widget get _name => TextFormField(
         decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.black),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            hintText: "Name",
-            hintStyle: const TextStyle(fontSize: 15, color: Colors.black)),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          hintText: "Name",
+          hintStyle: const TextStyle(
+            fontSize: 15,
+            color: Colors.black,
+          ),
+        ),
         keyboardType: TextInputType.name,
+        initialValue: formMap['name'],
         onSaved: (String? value) {
           formMap['name'] = value?.trim() ?? '';
         },
@@ -155,6 +181,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             hintText: "Email",
             hintStyle: const TextStyle(fontSize: 15, color: Colors.black)),
         keyboardType: TextInputType.name,
+        initialValue: formMap['email'],
         onSaved: (String? value) {
           formMap['email'] = value?.trim() ?? '';
         },
@@ -174,15 +201,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
             hintText: "Phone",
             hintStyle: const TextStyle(fontSize: 15, color: Colors.black)),
         keyboardType: TextInputType.name,
+        initialValue: formMap['phone'],
         onSaved: (String? value) {
           formMap['phone'] = value?.trim() ?? '';
         },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "Phone is required";
-          }
-          return null;
-        },
+        // validator: (value) {
+        //   if (value == null || value.isEmpty) {
+        //     return "Phone is required";
+        //   }
+        //   return null;
+        // },
       );
 
   Widget get _address => TextFormField(
@@ -194,15 +222,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
             hintText: "Address",
             hintStyle: const TextStyle(fontSize: 15, color: Colors.black)),
         keyboardType: TextInputType.name,
+        initialValue: formMap['address'],
         onSaved: (String? value) {
           formMap['address'] = value?.trim() ?? '';
         },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "Address is required";
-          }
-          return null;
-        },
+        // validator: (value) {
+        //   if (value == null || value.isEmpty) {
+        //     return "Address is required";
+        //   }
+        //   return null;
+        // },
       );
   Widget get _company => TextFormField(
         decoration: InputDecoration(
@@ -213,15 +242,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
             hintText: "Company",
             hintStyle: const TextStyle(fontSize: 15, color: Colors.black)),
         keyboardType: TextInputType.name,
+        initialValue: formMap['company']?['name'],
         onSaved: (String? value) {
           formMap['company'] = value?.trim() ?? '';
         },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "Company is required";
-          }
-          return null;
-        },
+        // validator: (value) {
+        //   if (value == null || value.isEmpty) {
+        //     return "Company is required";
+        //   }
+        //   return null;
+        // },
       );
   Widget get _website => TextFormField(
         decoration: InputDecoration(
@@ -232,14 +262,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
             hintText: "website",
             hintStyle: const TextStyle(fontSize: 15, color: Colors.black)),
         keyboardType: TextInputType.name,
+        initialValue: formMap['website'],
         onSaved: (String? value) {
           formMap['website'] = value?.trim() ?? '';
         },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "Website is required";
-          }
-          return null;
-        },
+        // validator: (value) {
+        //   if (value == null || value.isEmpty) {
+        //     return "Website is required";
+        //   }
+        //   return null;
+        // },
       );
 }

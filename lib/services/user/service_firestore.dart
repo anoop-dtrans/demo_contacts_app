@@ -33,7 +33,7 @@ class FirestoreUserService extends UserService {
       'email': user.email,
       'phone': user.phone,
       'website': user.website,
-      'company': user.company,
+      'company': user.company?.toJson(),
     };
     await users.doc(user.id).set({
       ...data,
